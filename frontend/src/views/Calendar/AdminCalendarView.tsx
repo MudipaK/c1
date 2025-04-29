@@ -82,7 +82,7 @@ const AdminCalendarView = () => {
             <div className="p-1 text-sm">
                 {booking?.status === 'blocked' ? (
                     <>
-                        <div>Blocked Dates</div>
+                        <div>Blocked Dates </div>
                         <small className="font-medium">{booking.description || 'No reason provided'}</small>
                     </>
                 ) : (
