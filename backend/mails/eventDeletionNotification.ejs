@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Deletion Notification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f7f7;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      background-color: <%= headerColor %>;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 5px 5px 0 0;
+    }
+    .content {
+      background-color: #ffffff;
+      padding: 20px;
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+    }
+    .footer {
+      background-color: #f1f1f1;
+      padding: 15px;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      border-radius: 0 0 5px 5px;
+      border: 1px solid #ddd;
+    }
+    .highlight {
+      color: <%= highlightColor %>;
+      font-weight: bold;
+    }
+    .event-details {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin: 15px 0;
+    }
+    .detail-row {
+      display: flex;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 8px;
+    }
+    .detail-label {
+      width: 40%;
+      font-weight: bold;
+      color: #555;
+    }
+    .detail-value {
+      width: 60%;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: bold;
+      background-color: <%= statusBgColor %>;
+      color: <%= statusTextColor %>;
+    }
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: <%= buttonColor %>;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+    .deletion-icon {
+      font-size: 64px;
+      margin-bottom: 15px;
+    }
+    /* Mobile responsiveness */
+    @media screen and (max-width: 480px) {
+      .detail-row {
+        flex-direction: column;
+      }
+      .detail-label, .detail-value {
+        width: 100%;
+      }
+      .detail-label {
+        margin-bottom: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="deletion-icon" role="img" aria-label="Warning Symbol">❌</div>
+      <h1>Event Deletion Notice</h1>
+    </div>
+    
+    <div class="content">
+      <p>Hello <%= recipientName %>,</p>
+      
+      <p>We want to inform you that an event for <span class="highlight"><%= organizationName %></span> has been deleted from EventLink.</p>
+      
+      <div class="event-details">
+        <h3>Deleted Event Details:</h3>
+        
+        <div class="detail-row">
+          <div class="detail-label">Event Name:</div>
+          <div class="detail-value"><%= eventName %></div>
+        </div>
+        
+        <div class="detail-row">
+          <div class="detail-label">Date:</div>
+          <div class="detail-value"><%= eventDate %></div>
+        </div>
+        
+        <div class="detail-row">
+          <div class="detail-label">Time:</div>
+          <div class="detail-value"><%= eventStartTime %> - <%= eventFinishTime %></div>
+        </div>
+        
+        <div class="detail-row">
+          <div class="detail-label">Event Type:</div>
+          <div class="detail-value"><%= eventType %></div>
+        </div>
+        
+        <div class="detail-row">
+          <div class="detail-label">Event Mode:</div>
+          <div class="detail-value"><%= eventMode %></div>
+        </div>
+        
+        <div class="detail-row">
+          <div class="detail-label">Previous Status:</div>
+          <div class="detail-value">
+            <span class="status-badge"><%= previousStatus %></span>
+          </div>
+        </div>
+        
+        <% if (deletedBy) { %>
+        <div class="detail-row">
+          <div class="detail-label">Deleted By:</div>
+          <div class="detail-value"><%= deletedBy %></div>
+        </div>
+        <% } %>
+        
+        <div class="detail-row">
+          <div class="detail-label">Deleted At:</div>
+          <div class="detail-value"><%= deletedAt %></div>
+        </div>
+      </div>
+      
+      <p>If you have any questions or believe this deletion was made in error, please contact the system administrator immediately.</p>
+      
+      <div style="text-align: center; margin-top: 25px;">
+        <a href="<%= dashboardUrl %>" class="button">Go to Dashboard</a>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>This is an automated message from EventLink. Please do not reply to this email.</p>
+      <p>&copy; <%= new Date().getFullYear() %> EventLink. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

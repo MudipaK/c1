@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>President Appointment</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      background-color: #3949ab;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 5px 5px 0 0;
+    }
+    .content {
+      background-color: #f9f9f9;
+      padding: 25px;
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+    }
+    .footer {
+      background-color: #f1f1f1;
+      padding: 15px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #666;
+      border-radius: 0 0 5px 5px;
+      border: 1px solid #ddd;
+    }
+    .highlight {
+      font-weight: bold;
+      color: #3949ab;
+    }
+    .button {
+      display: inline-block;
+      background-color: #3949ab;
+      color: white;
+      padding: 12px 25px;
+      text-decoration: none;
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Congratulations!</h1>
+    </div>
+    <div class="content">
+      <p>Dear <%= name %>,</p>
+      
+      <p>We're pleased to inform you that you have been appointed as the <span class="highlight">President</span> of the newly created organization: <span class="highlight"><%= organizationName %></span>.</p>
+      
+      <p>As the President, you will be responsible for leading the organization and working closely with your staff advisor, <%= advisorName %>.</p>
+      
+      <p>Key responsibilities include:</p>
+      <ul>
+        <li>Organizing and presiding over meetings</li>
+        <li>Planning and coordinating events</li>
+        <li>Representing the organization to the campus community</li>
+        <li>Managing organization resources and budget</li>
+      </ul>
+      
+      <p>Please log in to the EventLink platform to access your organization's dashboard.</p>
+      
+      <center><a href="<%= loginUrl %>" class="button">Access Your Dashboard</a></center>
+      
+      <p>If you have any questions, please don't hesitate to contact the administration or your staff advisor.</p>
+      
+      <p>Best regards,<br>
+      The EventLink Team</p>
+    </div>
+    <div class="footer">
+      <p>This is an automated message. Please do not reply directly to this email.</p>
+      <p>&copy; <%= new Date().getFullYear() %> EventLink. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

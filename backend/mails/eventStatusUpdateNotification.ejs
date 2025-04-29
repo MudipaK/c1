@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Status Update</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      background-color: <%= headerColor %>;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 5px 5px 0 0;
+    }
+    .content {
+      background-color: #f9f9f9;
+      padding: 25px;
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+    }
+    .footer {
+      background-color: #f1f1f1;
+      padding: 15px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #666;
+      border-radius: 0 0 5px 5px;
+      border: 1px solid #ddd;
+    }
+    .highlight {
+      font-weight: bold;
+      color: <%= highlightColor %>;
+    }
+    .status-change {
+      text-align: center;
+      padding: 15px;
+      margin: 20px 0;
+      background-color: <%= statusBgColor %>;
+      border-radius: 4px;
+      color: <%= statusTextColor %>;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-left: 5px solid <%= highlightColor %>;
+    }
+    .event-details {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      margin-top: 20px;
+    }
+    .button {
+      display: inline-block;
+      background-color: <%= buttonColor %>;
+      color: white;
+      padding: 12px 25px;
+      text-decoration: none;
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table td {
+      padding: 8px;
+    }
+    table td:first-child {
+      font-weight: bold;
+      width: 30%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Event Status Update</h1>
+    </div>
+    <div class="content">
+      <p>Dear <%= recipientName %>,</p>
+      
+      <p>We're writing to inform you that the status of the event <span class="highlight"><%= eventName %></span> for <span class="highlight"><%= organizationName %></span> has been updated.</p>
+      
+      <div class="status-change">
+        Status Change: <%= oldStatus %> → <%= newStatus %>
+      </div>
+      
+      <% if (newStatus === 'Approved') { %>
+        <p>Great news! Your event has been <span class="highlight">approved</span> and is now confirmed.</p>
+        <p>You may now proceed with all preparations and promotions for the event.</p>
+      <% } else if (newStatus === 'Rejected') { %>
+        <p>We regret to inform you that your event has been <span class="highlight">rejected</span>.</p>
+        <p>Please contact the staff advisor for more information about this decision and to discuss potential revisions that might allow for approval in the future.</p>
+      <% } else { %>
+        <p>Your event is currently <span class="highlight">pending review</span>.</p>
+        <p>The staff advisor will evaluate the event details and provide a decision soon.</p>
+      <% } %>
+      
+      <div class="event-details">
+        <h3>Event Details</h3>
+        <table>
+          <tr>
+            <td>Event Name:</td>
+            <td><%= eventName %></td>
+          </tr>
+          <tr>
+            <td>Date:</td>
+            <td><%= eventDate %></td>
+          </tr>
+          <tr>
+            <td>Time:</td>
+            <td><%= eventStartTime %> to <%= eventFinishTime %></td>
+          </tr>
+          <tr>
+            <td>Type:</td>
+            <td><%= eventType %></td>
+          </tr>
+          <tr>
+            <td>Venue:</td>
+            <td><%= eventVenue %></td>
+          </tr>
+          <tr>
+            <td>Mode:</td>
+            <td><%= eventMode %></td>
+          </tr>
+        </table>
+      </div>
+      
+      <center><a href="<%= eventDetailsUrl %>" class="button">View Event Details</a></center>
+      
+      <p>If you have any questions about this status change, please contact the staff advisor.</p>
+      
+      <p>Best regards,<br>
+      The EventLink Team</p>
+    </div>
+    <div class="footer">
+      <p>This is an automated message. Please do not reply directly to this email.</p>
+      <p>&copy; <%= new Date().getFullYear() %> EventLink. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

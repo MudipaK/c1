@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Approval Required</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      background-color: #f57c00;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 5px 5px 0 0;
+    }
+    .content {
+      background-color: #f9f9f9;
+      padding: 25px;
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+    }
+    .footer {
+      background-color: #f1f1f1;
+      padding: 15px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #666;
+      border-radius: 0 0 5px 5px;
+      border: 1px solid #ddd;
+    }
+    .highlight {
+      font-weight: bold;
+      color: #f57c00;
+    }
+    .button {
+      display: inline-block;
+      background-color: #f57c00;
+      color: white;
+      padding: 12px 25px;
+      text-decoration: none;
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+    .event-details {
+      background-color: #fff3e0;
+      border-left: 4px solid #f57c00;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .action-required {
+      color: #d32f2f;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Event Approval Required</h1>
+    </div>
+    <div class="content">
+      <p>Dear <%= name %>,</p>
+      
+      <p><span class="action-required">ACTION REQUIRED:</span> A new event has been created for <span class="highlight"><%= organizationName %></span> and is awaiting your approval:</p>
+      
+      <div class="event-details">
+        <p><strong>Event Name:</strong> <%= eventName %></p>
+        <p><strong>Date:</strong> <%= eventDate %></p>
+        <p><strong>Time:</strong> <%= eventStartTime %> - <%= eventFinishTime %></p>
+        <p><strong>Duration:</strong> <%= timePeriod %></p>
+        <p><strong>Mode:</strong> <%= eventMode %></p>
+        <p><strong>Type:</strong> <%= eventType %></p>
+        <p><strong>Venue:</strong> <%= eventVenue %></p>
+        <p><strong>Event President:</strong> <%= eventPresident %></p>
+        <p><strong>Submitted by:</strong> <%= presidentName %> (Organization President)</p>
+      </div>
+      
+      <p>Please review this event request and approve or reject it at your earliest convenience.</p>
+      
+      <center><a href="<%= eventReviewUrl %>" class="button">Review Event Now</a></center>
+      
+      <p>If you have any questions about this event, please contact the organization's president directly.</p>
+      
+      <p>Thank you for your prompt attention to this matter.</p>
+      
+      <p>Best regards,<br>
+      The EventLink Team</p>
+    </div>
+    <div class="footer">
+      <p>This is an automated message. Please do not reply directly to this email.</p>
+      <p>&copy; <%= new Date().getFullYear() %> EventLink. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
