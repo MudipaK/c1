@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { calendarService } from '../../services/calendarService';
 import { CalendarBooking, BookingFormData } from '../../types/calendar';
+import { toast } from 'react-hot-toast';
 
 interface CalendarState {
     bookings: CalendarBooking[];
@@ -16,33 +17,49 @@ const initialState: CalendarState = {
 
 export const fetchBookings = createAsyncThunk(
     'calendar/fetchBookings',
-    async () => {
-        const response = await calendarService.getAllBookings();
-        return response;
+    async (_, { rejectWithValue }) => {
+        try {
+            const bookings = await calendarService.getAllBookings();
+            return bookings;
+        } catch (error: any) {
+            return rejectWithValue(error.message);
+        }
     }
 );
 
 export const createBooking = createAsyncThunk(
     'calendar/createBooking',
-    async (bookingData: BookingFormData) => {
-        const response = await calendarService.createBooking(bookingData);
-        return response;
+    async (bookingData: BookingFormData, { rejectWithValue }) => {
+        try {
+            const response = await calendarService.createBooking(bookingData);
+            return response;
+        } catch (error: any) {
+            return rejectWithValue(error.message);
+        }
     }
 );
 
 export const updateBookingStatus = createAsyncThunk(
     'calendar/updateStatus',
-    async ({ bookingId, status }: { bookingId: string; status: string }) => {
-        const response = await calendarService.updateBookingStatus(bookingId, status);
-        return response;
+    async ({ bookingId, status }: { bookingId: string; status: string }, { rejectWithValue }) => {
+        try {
+            const response = await calendarService.updateBookingStatus(bookingId, status);
+            return response || null;
+        } catch (error: any) {
+            return rejectWithValue(error.message);
+        }
     }
 );
 
 export const blockDates = createAsyncThunk(
     'calendar/blockDates',
-    async (blockData: BookingFormData) => {
-        const response = await calendarService.blockDates(blockData);
-        return response;
+    async (bookingData: BookingFormData, { rejectWithValue }) => {
+        try {
+            const response = await calendarService.blockDates(bookingData);
+            return response;
+        } catch (error: any) {
+            return rejectWithValue(error.message || 'Failed to block dates');
+        }
     }
 );
 
@@ -52,6 +69,9 @@ const calendarSlice = createSlice({
     reducers: {
         clearError: (state) => {
             state.error = null;
+        },
+        clearBookings: (state) => {
+            state.bookings = [];
         }
     },
     extraReducers: (builder) => {
@@ -63,29 +83,60 @@ const calendarSlice = createSlice({
             })
             .addCase(fetchBookings.fulfilled, (state, action) => {
                 state.loading = false;
-                state.bookings = action.payload;
+                state.error = null;
+                state.bookings = action.payload || [];
             })
             .addCase(fetchBookings.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message || 'Failed to fetch bookings';
+                state.error = action.payload as string || 'Failed to fetch bookings';
+                state.bookings = [];
             })
             // Create booking
+            .addCase(createBooking.pending, (state) => {
+                state.error = null;
+            })
             .addCase(createBooking.fulfilled, (state, action) => {
-                state.bookings.push(action.payload);
+                if (action.payload) {
+                    state.bookings.push(action.payload);
+                }
+                state.error = null;
+            })
+            .addCase(createBooking.rejected, (state, action) => {
+                state.error = action.payload as string || 'Failed to create booking';
             })
             // Update booking status
+            .addCase(updateBookingStatus.pending, (state) => {
+                state.error = null;
+            })
             .addCase(updateBookingStatus.fulfilled, (state, action) => {
-                const index = state.bookings.findIndex(b => b._id === action.payload._id);
-                if (index !== -1) {
-                    state.bookings[index] = action.payload;
+                if (action.payload) {
+                    const index = state.bookings.findIndex(b => b._id === action.payload?._id);
+                    if (index !== -1) {
+                        state.bookings[index] = action.payload;
+                    }
                 }
+                state.error = null;
+            })
+            .addCase(updateBookingStatus.rejected, (state, action) => {
+                state.error = action.payload as string || 'Failed to update booking status';
             })
             // Block dates
+            .addCase(blockDates.pending, (state) => {
+                state.error = null;
+            })
             .addCase(blockDates.fulfilled, (state, action) => {
-                state.bookings.push(action.payload);
+                if (action.payload) {
+                    state.bookings.push(action.payload);
+                }
+                state.error = null;
+            })
+            .addCase(blockDates.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+                toast.error(action.payload as string);
             });
     }
 });
 
-export const { clearError } = calendarSlice.actions;
+export const { clearError, clearBookings } = calendarSlice.actions;
 export default calendarSlice.reducer;

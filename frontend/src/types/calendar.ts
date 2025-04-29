@@ -27,4 +27,6 @@ export interface BookingFormData {
     title: string;
     description?: string;
     venue?: string;
+    status?: 'pending' | 'approved' | 'rejected' | 'blocked';
+    isBlocked?: boolean;
 }

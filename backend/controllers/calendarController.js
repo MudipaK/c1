@@ -87,6 +87,24 @@ const blockDates = async (req, res) => {
             return res.status(403).json({ message: "Only staff admin can block dates" });
         }
 
+        // Check for existing conflicts
+        const conflicts = await CalendarBooking.find({
+            $or: [
+                {
+                    startDate: { $lte: new Date(endDate) },
+                    endDate: { $gte: new Date(startDate) }
+                }
+            ],
+            status: { $in: ['approved', 'blocked'] }
+        });
+
+        if (conflicts.length > 0) {
+            return res.status(400).json({ 
+                message: "Date range conflicts with existing bookings",
+                conflicts
+            });
+        }
+
         const booking = new CalendarBooking({
             startDate,
             endDate,

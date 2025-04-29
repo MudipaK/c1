@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./hooks/reduxHooks";
 import { getUserDetails } from "./store/slices/userSlice";
+import { Toaster } from "react-hot-toast";
 
 // pages
 import AdminView from "./views/AdminView";
@@ -51,6 +52,7 @@ function App() {
 
   return (
     <>
+      <Toaster position="top-right" />
       <div>
         <LoadingSpinner isLoading={user.isLoading} />
 

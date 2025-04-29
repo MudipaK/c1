@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import { AppDispatch, RootState } from '../../store';
 import { fetchBookings, updateBookingStatus, blockDates, clearError } from '../../store/slices/calendarSlice';
 import { CalendarBooking } from '../../types/calendar';
-import { RootState, AppDispatch } from '../../store';
 import { MdOutlineEventNote, MdEvent } from 'react-icons/md';
 import Button from "../../components/Button/Button";
 
 const AdminCalendarView = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { bookings = [], loading, error } = useSelector((state: RootState) => state.calendar);
+    const { bookings = [], loading, error } = useSelector((state: RootState) => ({
+        bookings: state.calendar.bookings || [],
+        loading: state.calendar.loading,
+        error: state.calendar.error
+    }));
+
     const [selectedEvent, setSelectedEvent] = useState<CalendarBooking | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isBlockingDialog, setIsBlockingDialog] = useState(false);
@@ -50,9 +55,20 @@ const AdminCalendarView = () => {
     };
 
     const handleBlockDates = async () => {
+        console.log('handleBlockDates called');
         if (!blockingDates.startDate || !blockingDates.endDate || !blockingDates.reason) {
+            console.log('Validation failed:', blockingDates);
+            alert('Please fill in all fields');
             return;
         }
+
+        console.log('Sending block dates request with data:', {
+            startDate: blockingDates.startDate,
+            endDate: blockingDates.endDate,
+            title: `Blocked: ${blockingDates.reason}`,
+            description: blockingDates.reason
+        });
+
         try {
             await dispatch(blockDates({
                 startDate: blockingDates.startDate,
@@ -60,11 +76,14 @@ const AdminCalendarView = () => {
                 title: `Blocked: ${blockingDates.reason}`,
                 description: blockingDates.reason
             })).unwrap();
+
+            console.log('Block dates successful');
             setIsBlockingDialog(false);
             setBlockingDates({ startDate: '', endDate: '', reason: '' });
-            dispatch(fetchBookings());
-        } catch (err) {
-            console.error('Error blocking dates:', err);
+            dispatch(fetchBookings()); // Refresh the calendar
+        } catch (error) {
+            console.error('Error blocking dates:', error);
+            alert('Failed to block dates. Please try again.');
         }
     };
 
@@ -88,7 +107,6 @@ const AdminCalendarView = () => {
         }
     };
 
-    // Rest of your component...
     return (
         <div className="p-6 bg-gray-100 min-h-screen">
             <div className="mb-6">
@@ -138,7 +156,7 @@ const AdminCalendarView = () => {
                                 center: 'title',
                                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
                             }}
-                            events={Array.isArray(bookings) ? bookings.map((event: CalendarBooking) => ({
+                            events={Array.isArray(bookings) ? bookings.map(event => ({
                                 id: event._id,
                                 title: event.title,
                                 start: event.startDate,
