@@ -67,21 +67,15 @@ function App() {
           <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/clubs" element={<ClubsView />} />
 
-          <Route path="/organizer" element={<OrganizerView />} />
-
-
-          <Route path="/organizer/eventsAdmin" element={<EventOrg />} />
-          <Route path="/organizer/profile" element={<Profile />} />
-          <Route path="/organizer/committee" element={<Committee />} />
-          <Route path="/organizer/resources" element={<Resources />} />
-          <Route path="/organizer/calendar" element={<Calendar />} />
-
+          <Route path="/organizer" element={<OrganizerView />}>
+            <Route path="eventsAdmin" element={<EventOrg />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="committee" element={<Committee />} />
+            <Route path="resources" element={<Resources />} />
+            <Route path="calendar" element={<Calendar />} />
+          </Route>
         </Routes>
-
-
       </div>
-
-
 
       <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]">
         <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-fuchsia-400 opacity-20 blur-[100px]"></div>

@@ -9,6 +9,7 @@ import { fetchBookings, createBooking } from '../../store/slices/calendarSlice';
 import { calendarService } from '../../services/calendarService';
 import { CalendarBooking, BookingFormData } from '../../types/calendar';
 import { RootState, AppDispatch } from '../../store';
+import { toast } from 'react-hot-toast';
 
 const OrganizerCalendarView = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -83,29 +84,29 @@ const OrganizerCalendarView = () => {
     };
 
     const handleDateSelect = async (selectInfo: any) => {
+        console.log('Date selected:', selectInfo); // Debug log
         const startDate = selectInfo.startStr;
-        const endDate = selectInfo.endStr;
         
         try {
-            // Check availability first
-            const availability = await calendarService.checkAvailability(startDate, endDate);
+            // Check availability for the single day
+            const availability = await calendarService.checkAvailability(startDate, startDate);
             
             if (!availability.isAvailable) {
                 if (availability.conflicts.length > 0) {
                     const conflict = availability.conflicts[0];
                     const conflictType = conflict.status === 'blocked' ? 'blocked date' : 'approved event';
-                    alert(`Selected dates overlap with a ${conflictType}: "${conflict.title}". Please choose different dates.`);
+                    alert(`Selected date overlaps with a ${conflictType}: "${conflict.title}". Please choose a different date.`);
                 } else {
-                    alert('These dates are not available. Please select different dates.');
+                    alert('This date is not available. Please select a different date.');
                 }
                 return;
             }
             
-            // If dates are available, open the request dialog
+            // If date is available, open the request dialog
             setNewEvent({
                 ...newEvent,
-                startDate,
-                endDate
+                startDate: startDate,
+                endDate: startDate
             });
             setIsRequestDialogOpen(true);
         } catch (error) {
@@ -130,10 +131,11 @@ const OrganizerCalendarView = () => {
                 description: '',
                 venue: ''
             });
+            toast.success('Event request submitted successfully. Waiting for admin approval.');
             dispatch(fetchBookings()); // Refresh the calendar
         } catch (error) {
             console.error('Error creating event request:', error);
-            alert('Failed to create event request. Please try again.');
+            toast.error('Failed to create event request. Please try again.');
         }
     };
 
@@ -194,8 +196,15 @@ const OrganizerCalendarView = () => {
     };
 
     return (
-        <Box sx={{ p: 3 }}>
-            <Paper sx={{ p: 2 }}>
+        <Box sx={{ 
+            p: 2,
+            height: 'calc(100vh - 72px)', // Subtract header height
+            overflow: 'auto'
+        }}>
+            <Paper sx={{ 
+                height: '100%',
+                overflow: 'hidden'
+            }}>
                 <FullCalendar
                     plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                     initialView="dayGridMonth"
@@ -216,7 +225,8 @@ const OrganizerCalendarView = () => {
                     eventClick={handleEventClick}
                     selectable={true}
                     select={handleDateSelect}
-                    height="auto"
+                    selectMirror={true}
+                    height="100%"
                     dayCellContent={dayCellContent}
                     dayCellClassNames={(arg) => {
                         const dateStr = arg.date.toISOString().split('T')[0];

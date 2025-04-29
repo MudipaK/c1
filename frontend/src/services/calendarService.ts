@@ -49,7 +49,10 @@ export const calendarService = {
 
     createBooking: async (bookingData: BookingFormData) => {
         try {
-            const response = await axiosInstance.post<CalendarBooking>('/bookings', bookingData);
+            const response = await axiosInstance.post<CalendarBooking>('/bookings', {
+                ...bookingData,
+                status: 'pending'
+            });
             return response.data;
         } catch (error) {
             handleError(error);
@@ -103,8 +106,21 @@ export const calendarService = {
                 { status }
             );
             return response.data;
-        } catch (error) {
-            handleError(error);
+        } catch (error: any) {
+            console.error('Error updating booking status:', error);
+            if (error.response?.status === 401) {
+                throw new Error('Please login to update booking status');
+            } else if (error.response?.status === 403) {
+                throw new Error('Only staff admin can update booking status');
+            } else if (error.response?.status === 404) {
+                throw new Error('Booking not found');
+            } else if (error.response?.data?.message) {
+                throw new Error(error.response.data.message);
+            } else if (error.request) {
+                throw new Error('No response from server. Please check if the server is running.');
+            } else {
+                throw new Error('Failed to update booking status. Please try again later.');
+            }
         }
     },
 
@@ -113,8 +129,7 @@ export const calendarService = {
             const response = await axiosInstance.post<CalendarBooking>('/block-dates', {
                 startDate: bookingData.startDate,
                 endDate: bookingData.endDate,
-                title: bookingData.title || 'Blocked Dates',
-                description: bookingData.description || 'Dates blocked by admin'
+                reason: bookingData.description || 'No reason provided'
             });
             return response.data;
         } catch (error: any) {

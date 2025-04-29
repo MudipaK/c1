@@ -55,29 +55,18 @@ const AdminCalendarView = () => {
     };
 
     const handleBlockDates = async () => {
-        console.log('handleBlockDates called');
         if (!blockingDates.startDate || !blockingDates.endDate || !blockingDates.reason) {
-            console.log('Validation failed:', blockingDates);
             alert('Please fill in all fields');
             return;
         }
-
-        console.log('Sending block dates request with data:', {
-            startDate: blockingDates.startDate,
-            endDate: blockingDates.endDate,
-            title: `Blocked: ${blockingDates.reason}`,
-            description: blockingDates.reason
-        });
 
         try {
             await dispatch(blockDates({
                 startDate: blockingDates.startDate,
                 endDate: blockingDates.endDate,
-                title: `Blocked: ${blockingDates.reason}`,
                 description: blockingDates.reason
             })).unwrap();
 
-            console.log('Block dates successful');
             setIsBlockingDialog(false);
             setBlockingDates({ startDate: '', endDate: '', reason: '' });
             dispatch(fetchBookings()); // Refresh the calendar
@@ -91,8 +80,17 @@ const AdminCalendarView = () => {
         const booking = bookings.find((e: CalendarBooking) => e._id === eventInfo.event.id);
         return (
             <div className="p-1 text-sm">
-                <div>{eventInfo.event.title}</div>
-                <small className="font-medium">{booking?.status?.toUpperCase()}</small>
+                {booking?.status === 'blocked' ? (
+                    <>
+                        <div>Blocked Dates</div>
+                        <small className="font-medium">{booking.description || 'No reason provided'}</small>
+                    </>
+                ) : (
+                    <>
+                        <div>{eventInfo.event.title}</div>
+                        <small className="font-medium">{booking?.status?.toUpperCase()}</small>
+                    </>
+                )}
             </div>
         );
     };
@@ -162,11 +160,16 @@ const AdminCalendarView = () => {
                                 start: event.startDate,
                                 end: event.endDate,
                                 backgroundColor: getEventColor(event.status),
-                                borderColor: getEventColor(event.status)
+                                borderColor: getEventColor(event.status),
+                                textColor: '#ffffff',
+                                display: 'block'
                             })) : []}
                             eventContent={eventContent}
                             eventClick={handleEventClick}
                             height="auto"
+                            eventDisplay="block"
+                            eventBackgroundColor={getEventColor('approved')}
+                            eventBorderColor={getEventColor('approved')}
                         />
                     </div>
                 </div>
