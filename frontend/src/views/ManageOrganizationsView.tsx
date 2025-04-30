@@ -101,6 +101,8 @@ const ManageOrganizations = () => {
       await deleteOrganizationAPI(id);
       setOrganizations((prevOrgs) => prevOrgs.filter((org) => org._id !== id));
       toast.success("Organization deleted successfully");
+      // Dispatch custom event
+      window.dispatchEvent(new CustomEvent('organizationDeleted'));
     } catch {
       toast.error("Failed to delete organization");
     }
@@ -136,6 +138,8 @@ const ManageOrganizations = () => {
         fetchOrganizations();
         setIsDialogOpen(false);
         toast.success("Organization updated successfully");
+        // Dispatch custom event
+        window.dispatchEvent(new CustomEvent('organizationUpdated'));
       } catch {
         toast.error("Failed to update organization");
       }
@@ -153,6 +157,8 @@ const ManageOrganizations = () => {
         fetchOrganizations();
         setIsDialogOpen(false);
         toast.success("Organization created successfully");
+        // Dispatch custom event
+        window.dispatchEvent(new CustomEvent('organizationCreated'));
       } catch {
         toast.error("Failed to create organization");
       }

@@ -36,6 +36,7 @@ export interface IOrganization {
   president: string | IUser;
   staffAdvisor: string | IUser;
   eventIds: string[];
+  logoUrl?: string;
   createdAt?: string;
   updatedAt?: string;
 }
